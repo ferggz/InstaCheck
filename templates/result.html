@@ -3,42 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <title>Resultados</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+
     <div class="container">
 
         <h1>Resultados</h1>
+        <p class="info">
+            NOTA: puede que algunas cuentas hayan sido eliminadas, desactivadas, hayan cambiado de nombre o te hayan bloqueado. 
+            Esto último puede comprobarse abriendo el perfil en modo incógnito o desde otra cuenta.
+        </p>
 
-        <h2>No te siguen</h2>
-        <p>Total: {{ not_following_back|length }}</p>
+        <!-- ❌ No te siguen -->
+        <div class="card">
+            <h2>❌ No te siguen</h2>
+            <p>Total: {{ not_following_back|length }}</p>
 
-        <ul>
-            {% for user in not_following_back %}
-                <li>{{ user }}</li>
-            {% endfor %}
-        </ul>
+            {% if not_following_back %}
+                <ul id="not-following">
+                    {% for user in not_following_back %}
+                        <li>
+                            <a href="https://www.instagram.com/{{ user }}" target="_blank">
+                                {{ user }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button onclick="copyList('not-following')">Copiar</button>
+            {% else %}
+                <p>Todos te siguen de vuelta 🎉</p>
+            {% endif %}
+        </div>
 
-        <h2>Te siguen pero tú no</h2>
-        <p>Total: {{ fans|length }}</p>
+        <!-- ⭐ Fans -->
+        <div class="card">
+            <h2>⭐ Te siguen pero tú no</h2>
+            <p>Total: {{ fans|length }}</p>
 
-        <ul>
-            {% for user in fans %}
-                <li>{{ user }}</li>
-            {% endfor %}
-        </ul>
+            {% if fans %}
+                <ul id="fans">
+                    {% for user in fans %}
+                        <li>
+                            <a href="https://www.instagram.com/{{ user }}" target="_blank">
+                                {{ user }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button onclick="copyList('fans')">Copiar</button>
+            {% else %}
+                <p>No hay fans 😢</p>
+            {% endif %}
+        </div>
 
-        <h2>Mutuos</h2>
-        <p>Total: {{ mutuals|length }}</p>
+        <!-- 🤝 Mutuos -->
+        <div class="card">
+            <h2>🤝 Mutuos</h2>
+            <p>Total: {{ mutuals|length }}</p>
 
-        <ul>
-            {% for user in mutuals %}
-                <li>{{ user }}</li>
-            {% endfor %}
-        </ul>
+            {% if mutuals %}
+                <ul id="mutuals">
+                    {% for user in mutuals %}
+                        <li>
+                            <a href="https://www.instagram.com/{{ user }}" target="_blank">
+                                {{ user }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button onclick="copyList('mutuals')">Copiar</button>
+            {% else %}
+                <p>No tienes mutuos</p>
+            {% endif %}
+        </div>
 
         <br>
         <a href="/">Volver</a>
 
     </div>
+
+    <script>
+        function copyList(id) {
+            const items = document.querySelectorAll(`#${id} li`);
+            let text = "";
+
+            items.forEach(li => {
+                text += li.innerText + "\n";
+            });
+
+            navigator.clipboard.writeText(text);
+            alert("Copiado!");
+        }
+    </script>
+
 </body>
 </html>

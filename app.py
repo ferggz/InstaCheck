@@ -7,37 +7,58 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-def extract_usernames(data):
+def extract_followers(data):
     usernames = []
 
     for item in data:
-        if "string_list_data" in item and item["string_list_data"]:
-            username = item["string_list_data"][0]["value"]
-            usernames.append(username)
+        username = item["string_list_data"][0]["value"]
+        usernames.append(username)
+
+    return usernames
+
+def extract_following(data):
+    usernames = []
+
+    for item in data["relationships_following"]:
+        username = item["title"]
+        usernames.append(username)
 
     return usernames
 
 @app.route("/compare", methods=["POST"])
 def compare():
-    followers_file = request.files["followers"]
-    following_file = request.files["following"]
+    try:
+        followers_file = request.files["followers"]
+        following_file = request.files["following"]
 
-    followers_data = json.load(followers_file)
-    following_data = json.load(following_file)
+        if not followers_file.filename.endswith(".json") or not following_file.filename.endswith(".json"):
+            return render_template(
+                "index.html",
+                error="Solo se permiten archivos .json"
+            )
 
-    followers = extract_usernames(followers_data)
-    following = extract_usernames(following_data)
+        followers_data = json.load(followers_file)
+        following_data = json.load(following_file)
 
-    not_following_back = sorted(set(following) - set(followers))
-    fans = sorted(set(followers) - set(following))
-    mutuals = sorted(set(followers) & set(following))
+        followers = extract_followers(followers_data)
+        following = extract_following(following_data)
 
-    return render_template(
-        "result.html",
-        not_following_back=not_following_back,
-        fans=fans,
-        mutuals=mutuals
-    )
+        not_following_back = sorted(set(following) - set(followers))
+        fans = sorted(set(followers) - set(following))
+        mutuals = sorted(set(followers) & set(following))
+
+        return render_template(
+            "result.html",
+            not_following_back=not_following_back,
+            fans=fans,
+            mutuals=mutuals
+        )
+
+    except (KeyError, TypeError, IndexError, json.JSONDecodeError):
+        return render_template(
+            "index.html",
+            error="Los archivos no son válidos. Sube followers_1.json y following.json descargados de Instagram."
+        )
 
 if __name__ == "__main__":
     app.run(debug=True)
