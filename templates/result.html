@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados</title>
+</head>
+<body>
+    <div class="container">
+
+        <h1>Resultados</h1>
+
+        <h2>No te siguen</h2>
+        <p>Total: {{ not_following_back|length }}</p>
+
+        <ul>
+            {% for user in not_following_back %}
+                <li>{{ user }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Te siguen pero tú no</h2>
+        <p>Total: {{ fans|length }}</p>
+
+        <ul>
+            {% for user in fans %}
+                <li>{{ user }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>Mutuos</h2>
+        <p>Total: {{ mutuals|length }}</p>
+
+        <ul>
+            {% for user in mutuals %}
+                <li>{{ user }}</li>
+            {% endfor %}
+        </ul>
+
+        <br>
+        <a href="/">Volver</a>
+
+    </div>
+</body>
+</html>

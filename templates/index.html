@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>InstaCheck</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container"></div>
+
+        <h1>InstaCheck</h1>
+        <p>Sube tus archivos de Instagram para ver quién no te sigue de vuelta</p>
+
+        <form action="/compare" method="post" enctype="multipart/form-data">
+
+            <label>Followers:</label><br>
+            <input type="file" name="followers" required><br><br>
+
+            <label>Following:</label><br>
+            <input type="file" name="following" required><br><br>
+
+            <button type="submit">Comparar</button>
+        </form>
+    
+    </div>
+
+</body>
+</html>
