@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <title>InstaCheck</title>
@@ -8,28 +8,42 @@
 <body>
     <div class="container">
 
-        <h1>InstaCheck</h1>
-        <p>Sube tus archivos de Instagram para ver quién no te sigue de vuelta</p>
-        <p class="info">
-            ⚠️ Sube archivos en formato <strong>.json</strong> descargados de Instagram
-        </p>
+        <div class="language-switch">
+            <a href="/?lang=es">ES</a> | <a href="/?lang=en">EN</a>
+        </div>
+
+        <h1>InstaCheck 🧐</h1>
+
+        {% if lang == "es" %}
+            <p>Sube tus archivos de Instagram para ver quién no te sigue de vuelta</p>
+            <p class="info">
+                ⚠️ Sube archivos en formato <strong>.json</strong> descargados de Instagram
+            </p>
+        {% else %}
+            <p>Upload your Instagram files to see who doesn't follow you back</p>
+            <p class="info">
+                ⚠️ Upload <strong>.json</strong> files downloaded from Instagram
+            </p>
+        {% endif %}
         
         {% if error %}
             <p class="error">{{ error }}</p>
         {% endif %}
 
         <form action="/compare" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="lang" value="{{ lang }}">
 
-            <label>Followers:</label><br>
-            <input type="file" name="followers" accept=".json" required><br><br>
+            <label>Followers:</label>
+            <input type="file" name="followers" accept=".json" required>
 
-            <label>Following:</label><br>
-            <input type="file" name="following" accept=".json" required><br><br>
+            <label>Following:</label>
+            <input type="file" name="following" accept=".json" required>
 
-            <button type="submit">Comparar</button>
+            <button type="submit">
+                {% if lang == "es" %}Comparar{% else %}Compare{% endif %}
+            </button>
         </form>
     
     </div>
-
 </body>
 </html>

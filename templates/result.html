@@ -1,24 +1,43 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
-    <title>Resultados</title>
+    <title>{% if lang == "es" %}Resultados{% else %}Results{% endif %}</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
     <div class="container">
 
-        <h1>Resultados</h1>
+        <h1>{% if lang == "es" %}Resultados{% else %}Results{% endif %}</h1>
+
         <p class="info">
-            NOTA: puede que algunas cuentas hayan sido eliminadas, desactivadas, hayan cambiado de nombre o te hayan bloqueado. 
-            Esto último puede comprobarse abriendo el perfil en modo incógnito o desde otra cuenta.
+            {% if lang == "es" %}
+                NOTA: puede que algunas cuentas hayan sido eliminadas, desactivadas, hayan cambiado de nombre o te hayan bloqueado. 
+                Esto último puede comprobarse abriendo el perfil en modo incógnito o desde otra cuenta.
+            {% else %}
+                NOTE: some accounts may have been deleted, deactivated, renamed, or may have blocked you. 
+                You can check this by opening the profile in incognito mode or from another account.
+            {% endif %}
         </p>
 
-        <!-- ❌ No te siguen -->
         <div class="card">
-            <h2>❌ No te siguen</h2>
-            <p>Total: {{ not_following_back|length }}</p>
+            <h2>
+                {% if lang == "es" %}
+                    ❌ No te siguen
+                {% else %}
+                    ❌ Not following you back
+                {% endif %}
+            </h2>
+
+            <p>
+                {% if lang == "es" %}
+                    Total:
+                {% else %}
+                    Total:
+                {% endif %}
+                {{ not_following_back|length }}
+            </p>
 
             {% if not_following_back %}
                 <ul id="not-following">
@@ -30,15 +49,29 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <button onclick="copyList('not-following')">Copiar</button>
+                <button onclick="copyList('not-following')">
+                    {% if lang == "es" %}Copiar{% else %}Copy{% endif %}
+                </button>
             {% else %}
-                <p>Todos te siguen de vuelta 🎉</p>
+                <p>
+                    {% if lang == "es" %}
+                        Todos te siguen de vuelta 🎉
+                    {% else %}
+                        Everyone follows you back 🎉
+                    {% endif %}
+                </p>
             {% endif %}
         </div>
 
-        <!-- ⭐ Fans -->
         <div class="card">
-            <h2>⭐ Te siguen pero tú no</h2>
+            <h2>
+                {% if lang == "es" %}
+                    ⭐ Te siguen pero tú no
+                {% else %}
+                    ⭐ They follow you but you don't
+                {% endif %}
+            </h2>
+
             <p>Total: {{ fans|length }}</p>
 
             {% if fans %}
@@ -51,15 +84,29 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <button onclick="copyList('fans')">Copiar</button>
+                <button onclick="copyList('fans')">
+                    {% if lang == "es" %}Copiar{% else %}Copy{% endif %}
+                </button>
             {% else %}
-                <p>No hay fans 😢</p>
+                <p>
+                    {% if lang == "es" %}
+                        No hay fans 😢
+                    {% else %}
+                        No fans 😢
+                    {% endif %}
+                </p>
             {% endif %}
         </div>
 
-        <!-- 🤝 Mutuos -->
         <div class="card">
-            <h2>🤝 Mutuos</h2>
+            <h2>
+                {% if lang == "es" %}
+                    🤝 Mutuos
+                {% else %}
+                    🤝 Mutuals
+                {% endif %}
+            </h2>
+
             <p>Total: {{ mutuals|length }}</p>
 
             {% if mutuals %}
@@ -72,14 +119,25 @@
                         </li>
                     {% endfor %}
                 </ul>
-                <button onclick="copyList('mutuals')">Copiar</button>
+                <button onclick="copyList('mutuals')">
+                    {% if lang == "es" %}Copiar{% else %}Copy{% endif %}
+                </button>
             {% else %}
-                <p>No tienes mutuos</p>
+                <p>
+                    {% if lang == "es" %}
+                        No tienes mutuos
+                    {% else %}
+                        No mutuals
+                    {% endif %}
+                </p>
             {% endif %}
         </div>
 
         <br>
-        <a href="/">Volver</a>
+
+        <a href="/?lang={{ lang }}">
+            {% if lang == "es" %}Volver{% else %}Back{% endif %}
+        </a>
 
     </div>
 
@@ -93,7 +151,7 @@
             });
 
             navigator.clipboard.writeText(text);
-            alert("Copiado!");
+            alert("{{ 'Copiado!' if lang == 'es' else 'Copied!' }}");
         }
     </script>
 

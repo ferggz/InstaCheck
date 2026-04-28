@@ -5,7 +5,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    lang = request.args.get("lang", "es")
+    return render_template("index.html", lang=lang)
 
 def extract_followers(data):
     usernames = []
@@ -27,6 +28,8 @@ def extract_following(data):
 
 @app.route("/compare", methods=["POST"])
 def compare():
+    lang = request.form.get("lang", "es")
+
     try:
         followers_file = request.files["followers"]
         following_file = request.files["following"]
@@ -34,7 +37,8 @@ def compare():
         if not followers_file.filename.endswith(".json") or not following_file.filename.endswith(".json"):
             return render_template(
                 "index.html",
-                error="Solo se permiten archivos .json"
+                lang=lang,
+                error="Solo se permiten archivos .json" if lang == "es" else "Only .json files are allowed"
             )
 
         followers_data = json.load(followers_file)
@@ -51,13 +55,17 @@ def compare():
             "result.html",
             not_following_back=not_following_back,
             fans=fans,
-            mutuals=mutuals
+            mutuals=mutuals,
+            lang=lang
         )
 
     except (KeyError, TypeError, IndexError, json.JSONDecodeError):
         return render_template(
             "index.html",
+            lang=lang,
             error="Los archivos no son válidos. Sube followers_1.json y following.json descargados de Instagram."
+            if lang == "es"
+            else "The files are not valid. Upload followers_1.json and following.json downloaded from Instagram."
         )
 
 if __name__ == "__main__":
