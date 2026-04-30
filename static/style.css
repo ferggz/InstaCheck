@@ -97,6 +97,12 @@ label {
     margin-bottom: 4px;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 button {
     background: #6366f1;
     color: white;
@@ -106,6 +112,8 @@ button {
     cursor: pointer;
     font-weight: bold;
     transition: transform 0.15s ease, background 0.15s ease;
+    margin-top: 14px;
+    align-self: center;
 }
 
 button:hover {

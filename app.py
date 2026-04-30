@@ -5,7 +5,8 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+    lang = request.args.get("lang", "es")
+    return render_template("index.html", lang=lang)
 
 def extract_followers(data):
     usernames = []
