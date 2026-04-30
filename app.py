@@ -3,10 +3,9 @@ import json
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
-    lang = request.args.get("lang", "es")
-    return render_template("index.html", lang=lang)
+    return render_template("index.html")
 
 def extract_followers(data):
     usernames = []
@@ -68,5 +67,7 @@ def compare():
             else "The files are not valid. Upload followers_1.json and following.json downloaded from Instagram."
         )
 
+import os
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
