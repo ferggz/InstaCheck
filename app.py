@@ -1,61 +1,106 @@
 from flask import Flask, render_template, request
 import json
+import os
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET"])
-def index():
-    lang = request.args.get("lang", "es")
-    return render_template("index.html", lang=lang)
+
+def get_language():
+    return request.args.get("lang") or request.form.get("lang", "es")
+
+
+def error_message(lang):
+    if lang == "es":
+        return "Los archivos no son válidos. Sube followers_1.json y following.json descargados de Instagram."
+    return "The files are not valid. Upload followers_1.json and following.json downloaded from Instagram."
+
+
+def extension_error_message(lang):
+    if lang == "es":
+        return "Solo se permiten archivos .json"
+    return "Only .json files are allowed"
+
+
+def is_json_file(file):
+    return file.filename.lower().endswith(".json")
+
+
+def load_json_file(file):
+    return json.load(file)
+
 
 def extract_followers(data):
     usernames = []
 
     for item in data:
-        username = item["string_list_data"][0]["value"]
-        usernames.append(username)
+        string_data = item.get("string_list_data", [])
+
+        if string_data:
+            username = string_data[0].get("value")
+
+            if username:
+                usernames.append(username)
 
     return usernames
+
 
 def extract_following(data):
     usernames = []
 
-    for item in data["relationships_following"]:
-        username = item["title"]
-        usernames.append(username)
+    for item in data.get("relationships_following", []):
+        username = item.get("title")
+
+        if username:
+            usernames.append(username)
 
     return usernames
 
+
+def compare_users(followers, following):
+    followers_set = set(followers)
+    following_set = set(following)
+
+    return {
+        "not_following_back": sorted(following_set - followers_set),
+        "fans": sorted(followers_set - following_set),
+        "mutuals": sorted(followers_set & following_set),
+    }
+
+
+@app.route("/", methods=["GET"])
+def index():
+    lang = get_language()
+    return render_template("index.html", lang=lang)
+
+
 @app.route("/compare", methods=["POST"])
 def compare():
-    lang = request.form.get("lang", "es")
+    lang = get_language()
 
     try:
         followers_file = request.files["followers"]
         following_file = request.files["following"]
 
-        if not followers_file.filename.endswith(".json") or not following_file.filename.endswith(".json"):
+        if not is_json_file(followers_file) or not is_json_file(following_file):
             return render_template(
                 "index.html",
                 lang=lang,
-                error="Solo se permiten archivos .json" if lang == "es" else "Only .json files are allowed"
+                error=extension_error_message(lang)
             )
 
-        followers_data = json.load(followers_file)
-        following_data = json.load(following_file)
+        followers_data = load_json_file(followers_file)
+        following_data = load_json_file(following_file)
 
         followers = extract_followers(followers_data)
         following = extract_following(following_data)
 
-        not_following_back = sorted(set(following) - set(followers))
-        fans = sorted(set(followers) - set(following))
-        mutuals = sorted(set(followers) & set(following))
+        results = compare_users(followers, following)
 
         return render_template(
             "result.html",
-            not_following_back=not_following_back,
-            fans=fans,
-            mutuals=mutuals,
+            not_following_back=results["not_following_back"],
+            fans=results["fans"],
+            mutuals=results["mutuals"],
             lang=lang
         )
 
@@ -63,12 +108,9 @@ def compare():
         return render_template(
             "index.html",
             lang=lang,
-            error="Los archivos no son válidos. Sube followers_1.json y following.json descargados de Instagram."
-            if lang == "es"
-            else "The files are not valid. Upload followers_1.json and following.json downloaded from Instagram."
+            error=error_message(lang)
         )
 
-import os
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

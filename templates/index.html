@@ -1,49 +1,31 @@
-<!DOCTYPE html>
-<html lang="{{ lang }}">
-<head>
-    <meta charset="UTF-8">
-    <title>InstaCheck</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-    <div class="container">
+{% extends "base.html" %}
 
-        <div class="language-switch">
-            <a href="/?lang=es">ES</a> | <a href="/?lang=en">EN</a>
-        </div>
+{% block title %}InstaCheck{% endblock %}
 
-        <h1>InstaCheck 🧐</h1>
+{% block content %}
 
-        {% if lang == "es" %}
-            <p>Sube tus archivos de Instagram para ver quién no te sigue de vuelta</p>
-            <p class="info">
-                ⚠️ Sube archivos en formato <strong>.json</strong> descargados de Instagram
-            </p>
-        {% else %}
-            <p>Upload your Instagram files to see who doesn't follow you back</p>
-            <p class="info">
-                ⚠️ Upload <strong>.json</strong> files downloaded from Instagram
-            </p>
-        {% endif %}
-        
-        {% if error %}
-            <p class="error">{{ error }}</p>
-        {% endif %}
+{% if lang == "es" %}
+    <p>Sube tus archivos de Instagram para ver quién no te sigue de vuelta</p>
+{% else %}
+    <p>Upload your Instagram files to see who doesn’t follow you back</p>
+{% endif %}
 
-        <form action="/compare" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="lang" value="{{ lang }}">
+<form action="/compare" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="lang" value="{{ lang }}">
 
-            <label>Followers:</label>
-            <input type="file" name="followers" accept=".json" required>
+    <label>followers_1.json</label>
+    <input type="file" name="followers" required>
 
-            <label>Following:</label>
-            <input type="file" name="following" accept=".json" required>
+    <label>following.json</label>
+    <input type="file" name="following" required>
 
-            <button type="submit">
-                {% if lang == "es" %}Comparar{% else %}Compare{% endif %}
-            </button>
-        </form>
-    
-    </div>
-</body>
-</html>
+    <button type="submit">
+        {{ "Comparar" if lang == "es" else "Compare" }}
+    </button>
+</form>
+
+{% if error %}
+    <p class="error">{{ error }}</p>
+{% endif %}
+
+{% endblock %}
