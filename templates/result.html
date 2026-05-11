@@ -12,7 +12,11 @@
 
     <ul id="not-following-list">
         {% for user in not_following_back %}
-            <li>{{ user }}</li>
+            <li>
+                <a href="https://instagram.com/{{ user }}" target="_blank">
+                    {{ user }}
+                </a>
+            </li>
         {% endfor %}
     </ul>
 
@@ -27,7 +31,11 @@
 
     <ul id="fans-list">
         {% for user in fans %}
-            <li>{{ user }}</li>
+            <li>
+                <a href="https://instagram.com/{{ user }}" target="_blank">
+                    {{ user }}
+                </a>
+            </li>
         {% endfor %}
     </ul>
 
@@ -42,7 +50,11 @@
 
     <ul id="mutuals-list">
         {% for user in mutuals %}
-            <li>{{ user }}</li>
+            <li>
+                <a href="https://instagram.com/{{ user }}" target="_blank">
+                    {{ user }}
+                </a>
+            </li>
         {% endfor %}
     </ul>
 
