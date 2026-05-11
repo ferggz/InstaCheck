@@ -4,28 +4,40 @@
 
 {% block content %}
 
-<h2>{{ "No te siguen de vuelta" if lang == "es" else "Not following you back" }}</h2>
-<ul>
-    {% for user in not_following_back %}
-        <li>{{ user }}</li>
-    {% endfor %}
-</ul>
+<h1>{{ "Resultados" if lang == "es" else "Results" }}</h1>
 
-<h2>{{ "Fans" if lang == "es" else "Fans" }}</h2>
-<ul>
-    {% for user in fans %}
-        <li>{{ user }}</li>
-    {% endfor %}
-</ul>
+<div class="card">
+    <h2>❌ {{ "No te siguen de vuelta" if lang == "es" else "Not following you back" }}</h2>
+    <p>Total: {{ not_following_back|length }}</p>
 
-<h2>{{ "Mutuos" if lang == "es" else "Mutuals" }}</h2>
-<ul>
-    {% for user in mutuals %}
-        <li>{{ user }}</li>
-    {% endfor %}
-</ul>
+    <ul>
+        {% for user in not_following_back %}
+            <li>{{ user }}</li>
+        {% endfor %}
+    </ul>
+</div>
 
-<br>
+<div class="card">
+    <h2>⭐ {{ "Fans" if lang == "es" else "They follow you but you don't" }}</h2>
+    <p>Total: {{ fans|length }}</p>
+
+    <ul>
+        {% for user in fans %}
+            <li>{{ user }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="card">
+    <h2>🤝 {{ "Mutuos" if lang == "es" else "Mutuals" }}</h2>
+    <p>Total: {{ mutuals|length }}</p>
+
+    <ul>
+        {% for user in mutuals %}
+            <li>{{ user }}</li>
+        {% endfor %}
+    </ul>
+</div>
 
 <a href="{{ url_for('index', lang=lang) }}">
     {{ "Volver" if lang == "es" else "Back" }}
